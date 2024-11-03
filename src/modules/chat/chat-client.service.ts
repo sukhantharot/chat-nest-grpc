@@ -11,7 +11,7 @@ export class ChatClientService implements OnModuleInit {
     transport: Transport.GRPC,
     options: {
       package: 'chat',
-      protoPath: join(__dirname, '../../proto/chat'),
+      protoPath: join(__dirname, '../../proto/chat/chat.proto'),
     },
   })
   private client: ClientGrpc;

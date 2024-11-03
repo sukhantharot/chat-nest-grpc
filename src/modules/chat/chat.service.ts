@@ -20,6 +20,7 @@ export class ChatService {
 
   @GrpcStreamMethod('ChatService', 'ChatStream')
   chatStream(message$: Observable<Message>): Observable<Message> {
+    console.log('ChatStream');
     message$.subscribe((message) => {
       this.messageStream.next(message); // ส่งข้อความไปยังทุกไคลเอนต์ที่เชื่อมต่อ
     });
