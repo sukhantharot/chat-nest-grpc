@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package user;
+
+// The gRPC service definition
+service UserService {
+  // Define an RPC method to get a user by ID
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+
+  // Define an RPC method to create a new user
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+}
+
+// Request message for GetUser
+message GetUserRequest {
+  string id = 1;
+}
+
+// Response message for GetUser
+message GetUserResponse {
+  User user = 1;
+}
+
+// Request message for CreateUser
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+// Response message for CreateUser
+message CreateUserResponse {
+  User user = 1;
+}
+
+// The User message structure
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}

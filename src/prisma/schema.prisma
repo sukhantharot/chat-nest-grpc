@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  status    Boolean?  @default(true)
+  email     String    @unique
+  name      String?
+  deletedAt DateTime? @db.Timestamp(3)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt @db.Timestamp(3)
+  deletedBy Int?
+  updatedBy Int?
+  createdBy Int?
+
+  @@index([email])
+}
+
+model Product {
+  id            Int       @id @default(autoincrement())
+  status        Boolean?  @default(true)
+  deletedAt     DateTime? @db.Timestamp(3)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt @db.Timestamp(3)
+  deletedBy     Int?
+  updatedBy     Int?
+  createdBy     Int?
+  nameEn        String?
+  nameTh        String?
+  descriptionEn String?
+  descriptionTh String?
+  itineraryEn   String?
+  itineraryTh   String?
+  conditionsEn  String?
+  conditionsTh  String?
+  remarksEn     String?
+  remarksTh     String?
+
+  packages         Package[]
+  productItinerary ProductItinerary[]
+
+  @@index([nameEn])
+  @@index([nameTh])
+}
+
+model Package {
+  id            Int       @id @default(autoincrement())
+  status        Boolean?  @default(true)
+  deletedAt     DateTime? @db.Timestamp(3)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt @db.Timestamp(3)
+  deletedBy     Int?
+  updatedBy     Int?
+  createdBy     Int?
+  titleEn       String?
+  titleTh       String?
+  descriptionEn String?
+  descriptionTh String?
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  prices    Price[]
+
+  @@index([titleEn])
+  @@index([titleTh])
+}
+
+model Price {
+  id                  Int       @id @default(autoincrement())
+  status              Boolean?  @default(true)
+  deletedAt           DateTime? @db.Timestamp(3)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt @db.Timestamp(3)
+  deletedBy           Int?
+  updatedBy           Int?
+  createdBy           Int?
+  titleEn             String?
+  titleTh             String?
+  saleAdultPrice      Float?
+  saleChildPrice      Float?
+  promotionAdultPrice Float?
+  promotionChildPrice Float?
+
+  package   Package @relation(fields: [packageId], references: [id])
+  packageId Int
+
+  @@index([titleEn])
+  @@index([titleTh])
+  @@index([saleAdultPrice])
+  @@index([saleChildPrice])
+  @@index([promotionAdultPrice])
+  @@index([promotionChildPrice])
+}
+
+model ProductItinerary {
+  id         Int       @id @default(autoincrement())
+  status     Boolean?  @default(true)
+  deletedAt  DateTime? @db.Timestamp(3)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt @db.Timestamp(3)
+  deletedBy  Int?
+  updatedBy  Int?
+  createdBy  Int?
+  titleEn    String?
+  titleTh    String?
+  subTitleEn String?
+  subTitleTh String?
+
+  product Product @relation(fields: [productId], references: [id])
+
+  productId Int
+
+  @@index([titleEn])
+  @@index([titleTh])
+  @@index([subTitleEn])
+  @@index([subTitleTh])
+}
