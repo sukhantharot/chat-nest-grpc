@@ -17,28 +17,27 @@ const protoChatFiles = fs
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.enableCors();
-  // app.use(json({ limit: '50mb' }));
-  // app.use(urlencoded({ extended: true, limit: '50mb' }));
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     transform: true,
-  //   }),
-  // );
+  app.enableCors();
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ extended: true, limit: '50mb' }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
   const configService = app.get(ConfigService);
-  // app.use(
-  //   session({
-  //     secret: configService.get<string>('AUTH_SECRET', 'secret'),
-  //     resave: false,
-  //     saveUninitialized: false,
-  //     cookie: { secure: false },
-  //   }),
-  // );
-  // app.use(passport.initialize());
-  // app.use(passport.session());
-  // const appPort = configService.get<number>('PORT', 3000);
+  app.use(
+    session({
+      secret: configService.get<string>('AUTH_SECRET', 'secret'),
+      resave: false,
+      saveUninitialized: false,
+      cookie: { secure: false },
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+  const appPort = configService.get<number>('PORT', 3000);
   const grpcPort = configService.get<number>('GRPC_PORT', 50051);
-  //
   // Configure the gRPC server
   const grpcOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
@@ -53,28 +52,11 @@ async function bootstrap() {
   };
   app.connectMicroservice<MicroserviceOptions>(grpcOptions);
   await app.startAllMicroservices();
-  await app.listen(grpcPort);
-  // await app.listen(appPort);
-  // console.log(`Application is running on: ${await app.getUrl()}`);
-  //
-  // const stage = process.env.ENV;
-  // Logger.log(
-  //   'REST API is running in "' +
-  //     stage +
-  //     '" stage, and it is listening at: http://localhost:' +
-  //     appPort +
-  //     '/',
-  // );
-  // Logger.log(
-  //   'GRPC is running in "' +
-  //     stage +
-  //     '" stage, and it is listening at: http://localhost:' +
-  //     grpcPort +
-  //     '/',
-  // );
+  await app.listen(appPort);
 }
 
 bootstrap().then(() => {
   const logger = new Logger('Main Logger');
   logger.log(`gRPC server is listening on port ${process.env.GRPC_PORT}`);
+  logger.log(`REST API server is listening on port ${process.env.PORT}`);
 });

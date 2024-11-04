@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import {
   ChatServiceController,
@@ -27,5 +27,25 @@ export class ChatController implements ChatServiceController {
 
   streamMessages(request: User): Observable<Message> {
     return this.chatService.streamMessages(request);
+  }
+
+  @Get('hello')
+  async sayHello(
+    @Query('senderId') senderId: string,
+    @Query('receiverId') receiverId: string,
+    @Query('messageContent') messageContent: string,
+    @Query('timestamp') timestamp: string,
+  ) {
+    console.log('receiverId', receiverId);
+    // เรียกใช้ gRPC Service
+    return this.chatService.sendMessage(
+      {
+        senderId,
+        receiverId,
+        messageContent,
+        timestamp,
+      },
+      null,
+    );
   }
 }
