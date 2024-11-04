@@ -1,34 +1,31 @@
-// import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-// import { ChatService } from './chat.service';
-// import { CreateChatDto } from './dto/create-chat.dto';
-// import { UpdateChatDto } from './dto/update-chat.dto';
-//
-// @Controller('chat')
-// export class ChatController {
-//   constructor(private readonly chatService: ChatService) {}
-//
-//   @Post()
-//   create(@Body() createChatDto: CreateChatDto) {
-//     return this.chatService.create(createChatDto);
-//   }
-//
-//   @Get()
-//   findAll() {
-//     return this.chatService.findAll();
-//   }
-//
-//   @Get(':id')
-//   findOne(@Param('id') id: string) {
-//     return this.chatService.findOne(+id);
-//   }
-//
-//   @Patch(':id')
-//   update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
-//     return this.chatService.update(+id, updateChatDto);
-//   }
-//
-//   @Delete(':id')
-//   remove(@Param('id') id: string) {
-//     return this.chatService.remove(+id);
-//   }
-// }
+import { Controller } from '@nestjs/common';
+import { ChatService } from './chat.service';
+import {
+  ChatServiceController,
+  ChatServiceControllerMethods,
+} from '../../proto/chat/chat';
+import { Observable, of } from 'rxjs';
+import { Message, SendMessageResponse, User } from './chat.interface';
+
+@Controller('chat')
+@ChatServiceControllerMethods()
+export class ChatController implements ChatServiceController {
+  constructor(private readonly chatService: ChatService) {}
+
+  chatStream(request: Observable<Message>): Observable<Message> {
+    return this.chatService.chatStream(request);
+  }
+
+  sendMessage(
+    request: Message,
+  ):
+    | Promise<SendMessageResponse>
+    | Observable<SendMessageResponse>
+    | SendMessageResponse {
+    return this.chatService.sendMessage(request, null);
+  }
+
+  streamMessages(request: User): Observable<Message> {
+    return this.chatService.streamMessages(request);
+  }
+}

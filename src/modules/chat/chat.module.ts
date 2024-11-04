@@ -4,7 +4,8 @@ import { ChatService } from './chat.service';
 import * as fs from 'fs';
 import { resolve } from 'path';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ChatClientService } from "./chat-client.service";
+import { ChatClientService } from './chat-client.service';
+import { ChatController } from './chat.controller';
 
 // ใช้ path.resolve เพื่อระบุเส้นทางที่ชัดเจน
 const protoChatFiles = fs
@@ -27,7 +28,8 @@ const protoChatFiles = fs
       },
     ]),
   ],
-  // controllers: [ChatController],
+  controllers: [ChatController],
   providers: [ChatService, ChatClientService],
+  exports: [ChatClientService, ChatService],
 })
 export class ChatModule {}

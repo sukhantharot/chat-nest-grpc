@@ -48,6 +48,7 @@ async function bootstrap() {
       onLoadPackageDefinition: (pkg, server) => {
         new ReflectionService(pkg).addToServer(server);
       },
+      url: `0.0.0.0:${grpcPort}`,
     },
   };
   app.connectMicroservice<MicroserviceOptions>(grpcOptions);
@@ -73,4 +74,7 @@ async function bootstrap() {
   // );
 }
 
-bootstrap();
+bootstrap().then(() => {
+  const logger = new Logger('Main Logger');
+  logger.log(`gRPC server is listening on port ${process.env.GRPC_PORT}`);
+});
